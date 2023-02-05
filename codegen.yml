@@ -1,0 +1,10 @@
+overwrite: true
+schema: "./schema.graphql"
+documents: "src/**/*.graphql"
+generates:
+  src/gen/graphql.ts:
+    plugins:
+      # ref: https://www.graphql-code-generator.com/plugins/typescript-react-query#using-fetch-with-codegen-configuration
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-query"

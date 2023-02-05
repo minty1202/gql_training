@@ -1,0 +1,20 @@
+query GetTodos {
+  todos {
+    id
+		text
+		created_at
+		updated_at
+  }
+}
+
+mutation InsertTodos($text: String) {
+  insert_todos(objects: {text: $text}) {
+    affected_rows
+    returning {
+      id
+			text
+			created_at
+			updated_at
+    }
+  }
+}
