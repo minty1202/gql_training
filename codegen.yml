@@ -1,5 +1,5 @@
 overwrite: true
-schema: "./schema.graphql"
+schema: "http://localhost:8080/v1/graphql"
 documents: "src/**/*.graphql"
 generates:
   src/gen/graphql.ts:
@@ -7,4 +7,4 @@ generates:
       # ref: https://www.graphql-code-generator.com/plugins/typescript-react-query#using-fetch-with-codegen-configuration
       - "typescript"
       - "typescript-operations"
-      - "typescript-react-query"
+      - "typescript-react-apollo"

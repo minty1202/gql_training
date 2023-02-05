@@ -1,9 +1,9 @@
 query GetTodos {
   todos {
     id
-		text
-		created_at
-		updated_at
+    text
+    created_at
+    updated_at
   }
 }
 
@@ -12,9 +12,9 @@ mutation InsertTodos($text: String) {
     affected_rows
     returning {
       id
-			text
-			created_at
-			updated_at
+      text
+      created_at
+      updated_at
     }
   }
 }

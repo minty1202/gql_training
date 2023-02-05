@@ -1,29 +1,11 @@
-import { useQuery, useMutation, UseQueryOptions, UseMutationOptions } from '@tanstack/react-query';
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-
-function fetcher<TData, TVariables>(endpoint: string, requestInit: RequestInit, query: string, variables?: TVariables) {
-  return async (): Promise<TData> => {
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      ...requestInit,
-      body: JSON.stringify({ query, variables }),
-    });
-
-    const json = await res.json();
-
-    if (json.errors) {
-      const { message } = json.errors[0];
-
-      throw new Error(message);
-    }
-
-    return json.data;
-  }
-}
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -492,7 +474,7 @@ export type InsertTodosMutationVariables = Exact<{
 export type InsertTodosMutation = { __typename?: 'mutation_root', insert_todos?: { __typename?: 'todos_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'todos', id: number, text: string, created_at: any, updated_at: any }> } | null };
 
 
-export const GetTodosDocument = `
+export const GetTodosDocument = gql`
     query GetTodos {
   todos {
     id
@@ -502,20 +484,34 @@ export const GetTodosDocument = `
   }
 }
     `;
-export const useGetTodosQuery = <
-      TData = GetTodosQuery,
-      TError = unknown
-    >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      variables?: GetTodosQueryVariables,
-      options?: UseQueryOptions<GetTodosQuery, TError, TData>
-    ) =>
-    useQuery<GetTodosQuery, TError, TData>(
-      variables === undefined ? ['GetTodos'] : ['GetTodos', variables],
-      fetcher<GetTodosQuery, GetTodosQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetTodosDocument, variables),
-      options
-    );
-export const InsertTodosDocument = `
+
+/**
+ * __useGetTodosQuery__
+ *
+ * To run a query within a React component, call `useGetTodosQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTodosQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTodosQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetTodosQuery(baseOptions?: Apollo.QueryHookOptions<GetTodosQuery, GetTodosQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTodosQuery, GetTodosQueryVariables>(GetTodosDocument, options);
+      }
+export function useGetTodosLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTodosQuery, GetTodosQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTodosQuery, GetTodosQueryVariables>(GetTodosDocument, options);
+        }
+export type GetTodosQueryHookResult = ReturnType<typeof useGetTodosQuery>;
+export type GetTodosLazyQueryHookResult = ReturnType<typeof useGetTodosLazyQuery>;
+export type GetTodosQueryResult = Apollo.QueryResult<GetTodosQuery, GetTodosQueryVariables>;
+export const InsertTodosDocument = gql`
     mutation InsertTodos($text: String) {
   insert_todos(objects: {text: $text}) {
     affected_rows
@@ -528,15 +524,29 @@ export const InsertTodosDocument = `
   }
 }
     `;
-export const useInsertTodosMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
-      options?: UseMutationOptions<InsertTodosMutation, TError, InsertTodosMutationVariables, TContext>
-    ) =>
-    useMutation<InsertTodosMutation, TError, InsertTodosMutationVariables, TContext>(
-      ['InsertTodos'],
-      (variables?: InsertTodosMutationVariables) => fetcher<InsertTodosMutation, InsertTodosMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, InsertTodosDocument, variables)(),
-      options
-    );
+export type InsertTodosMutationFn = Apollo.MutationFunction<InsertTodosMutation, InsertTodosMutationVariables>;
+
+/**
+ * __useInsertTodosMutation__
+ *
+ * To run a mutation, you first call `useInsertTodosMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInsertTodosMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [insertTodosMutation, { data, loading, error }] = useInsertTodosMutation({
+ *   variables: {
+ *      text: // value for 'text'
+ *   },
+ * });
+ */
+export function useInsertTodosMutation(baseOptions?: Apollo.MutationHookOptions<InsertTodosMutation, InsertTodosMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<InsertTodosMutation, InsertTodosMutationVariables>(InsertTodosDocument, options);
+      }
+export type InsertTodosMutationHookResult = ReturnType<typeof useInsertTodosMutation>;
+export type InsertTodosMutationResult = Apollo.MutationResult<InsertTodosMutation>;
+export type InsertTodosMutationOptions = Apollo.BaseMutationOptions<InsertTodosMutation, InsertTodosMutationVariables>;
