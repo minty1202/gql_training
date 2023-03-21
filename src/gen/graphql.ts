@@ -473,6 +473,13 @@ export type InsertTodosMutationVariables = Exact<{
 
 export type InsertTodosMutation = { __typename?: 'mutation_root', insert_todos?: { __typename?: 'todos_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'todos', id: number, text: string, created_at: any, updated_at: any }> } | null };
 
+export type DeleteTodoMutationVariables = Exact<{
+  id?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type DeleteTodoMutation = { __typename?: 'mutation_root', delete_todos?: { __typename?: 'todos_mutation_response', returning: Array<{ __typename?: 'todos', id: number, text: string }> } | null };
+
 
 export const GetTodosDocument = gql`
     query GetTodos {
@@ -550,3 +557,39 @@ export function useInsertTodosMutation(baseOptions?: Apollo.MutationHookOptions<
 export type InsertTodosMutationHookResult = ReturnType<typeof useInsertTodosMutation>;
 export type InsertTodosMutationResult = Apollo.MutationResult<InsertTodosMutation>;
 export type InsertTodosMutationOptions = Apollo.BaseMutationOptions<InsertTodosMutation, InsertTodosMutationVariables>;
+export const DeleteTodoDocument = gql`
+    mutation DeleteTodo($id: Int) {
+  delete_todos(where: {id: {_eq: $id}}) {
+    returning {
+      id
+      text
+    }
+  }
+}
+    `;
+export type DeleteTodoMutationFn = Apollo.MutationFunction<DeleteTodoMutation, DeleteTodoMutationVariables>;
+
+/**
+ * __useDeleteTodoMutation__
+ *
+ * To run a mutation, you first call `useDeleteTodoMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteTodoMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteTodoMutation, { data, loading, error }] = useDeleteTodoMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteTodoMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTodoMutation, DeleteTodoMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteTodoMutation, DeleteTodoMutationVariables>(DeleteTodoDocument, options);
+      }
+export type DeleteTodoMutationHookResult = ReturnType<typeof useDeleteTodoMutation>;
+export type DeleteTodoMutationResult = Apollo.MutationResult<DeleteTodoMutation>;
+export type DeleteTodoMutationOptions = Apollo.BaseMutationOptions<DeleteTodoMutation, DeleteTodoMutationVariables>;

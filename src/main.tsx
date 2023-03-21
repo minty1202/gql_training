@@ -6,12 +6,16 @@ import { client } from "../lib/apolloClient";
 
 import { ApolloProvider } from "@apollo/client";
 
+import { Box } from "@mui/material";
+
 const rootElement = document.getElementById("root");
 
 if (rootElement) {
   createRoot(rootElement).render(
     <ApolloProvider client={client}>
-      <App />
+      <Box p={2}>
+        <App />
+      </Box>
     </ApolloProvider>
   );
 }
