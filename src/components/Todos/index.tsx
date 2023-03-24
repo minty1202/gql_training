@@ -17,15 +17,15 @@ export function Todos () {
 
   return (
     <>
-    <Box display='flex' alignItems='center' m={2}>
-      <TextField
-        label="Todo"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        sx={{ mr: 2 }}
-      />
-      <SubmitTodo text={text} onSubmit={handleSubmit} />
-    </Box>
+      <Box display='flex' alignItems='center' m={2}>
+        <TextField
+          label="Todo"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          sx={{ mr: 2 }}
+        />
+        <SubmitTodo text={text} onSubmit={handleSubmit} />
+      </Box>
       <TodoList todos={data?.todos} />
     </>
   );
