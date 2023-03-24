@@ -16,6 +16,19 @@ export type Scalars = {
   timestamptz: any;
 };
 
+/** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
+export type Boolean_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['Boolean']>;
+  _gt?: InputMaybe<Scalars['Boolean']>;
+  _gte?: InputMaybe<Scalars['Boolean']>;
+  _in?: InputMaybe<Array<Scalars['Boolean']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['Boolean']>;
+  _lte?: InputMaybe<Scalars['Boolean']>;
+  _neq?: InputMaybe<Scalars['Boolean']>;
+  _nin?: InputMaybe<Array<Scalars['Boolean']>>;
+};
+
 /** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 export type Int_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Int']>;
@@ -246,6 +259,7 @@ export type Todos = {
   __typename?: 'todos';
   created_at: Scalars['timestamptz'];
   id: Scalars['Int'];
+  is_completed?: Maybe<Scalars['Boolean']>;
   text: Scalars['String'];
   updated_at: Scalars['timestamptz'];
 };
@@ -293,6 +307,7 @@ export type Todos_Bool_Exp = {
   _or?: InputMaybe<Array<Todos_Bool_Exp>>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
+  is_completed?: InputMaybe<Boolean_Comparison_Exp>;
   text?: InputMaybe<String_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
@@ -312,6 +327,7 @@ export type Todos_Inc_Input = {
 export type Todos_Insert_Input = {
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['Int']>;
+  is_completed?: InputMaybe<Scalars['Boolean']>;
   text?: InputMaybe<Scalars['String']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
@@ -354,6 +370,7 @@ export type Todos_On_Conflict = {
 export type Todos_Order_By = {
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  is_completed?: InputMaybe<Order_By>;
   text?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -370,6 +387,8 @@ export enum Todos_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
+  IsCompleted = 'is_completed',
+  /** column name */
   Text = 'text',
   /** column name */
   UpdatedAt = 'updated_at'
@@ -379,6 +398,7 @@ export enum Todos_Select_Column {
 export type Todos_Set_Input = {
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['Int']>;
+  is_completed?: InputMaybe<Scalars['Boolean']>;
   text?: InputMaybe<Scalars['String']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
@@ -413,6 +433,7 @@ export type Todos_Stream_Cursor_Input = {
 export type Todos_Stream_Cursor_Value_Input = {
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['Int']>;
+  is_completed?: InputMaybe<Scalars['Boolean']>;
   text?: InputMaybe<Scalars['String']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
@@ -429,6 +450,8 @@ export enum Todos_Update_Column {
   CreatedAt = 'created_at',
   /** column name */
   Id = 'id',
+  /** column name */
+  IsCompleted = 'is_completed',
   /** column name */
   Text = 'text',
   /** column name */
@@ -464,28 +487,37 @@ export type Todos_Variance_Fields = {
 export type GetTodosQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetTodosQuery = { __typename?: 'query_root', todos: Array<{ __typename?: 'todos', id: number, text: string, created_at: any, updated_at: any }> };
+export type GetTodosQuery = { __typename?: 'query_root', todos: Array<{ __typename?: 'todos', id: number, text: string, is_completed?: boolean | null, created_at: any, updated_at: any }> };
 
 export type InsertTodosMutationVariables = Exact<{
   text?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type InsertTodosMutation = { __typename?: 'mutation_root', insert_todos?: { __typename?: 'todos_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'todos', id: number, text: string, created_at: any, updated_at: any }> } | null };
+export type InsertTodosMutation = { __typename?: 'mutation_root', insert_todos?: { __typename?: 'todos_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'todos', id: number, text: string, is_completed?: boolean | null, created_at: any, updated_at: any }> } | null };
 
 export type DeleteTodoMutationVariables = Exact<{
   id?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type DeleteTodoMutation = { __typename?: 'mutation_root', delete_todos?: { __typename?: 'todos_mutation_response', returning: Array<{ __typename?: 'todos', id: number, text: string }> } | null };
+export type DeleteTodoMutation = { __typename?: 'mutation_root', delete_todos?: { __typename?: 'todos_mutation_response', affected_rows: number } | null };
+
+export type UpdateTodoStatusMutationVariables = Exact<{
+  _eq: Scalars['Int'];
+  is_completed: Scalars['Boolean'];
+}>;
+
+
+export type UpdateTodoStatusMutation = { __typename?: 'mutation_root', update_todos?: { __typename?: 'todos_mutation_response', affected_rows: number } | null };
 
 
 export const GetTodosDocument = gql`
     query GetTodos {
-  todos {
+  todos(order_by: {id: desc}) {
     id
     text
+    is_completed
     created_at
     updated_at
   }
@@ -525,6 +557,7 @@ export const InsertTodosDocument = gql`
     returning {
       id
       text
+      is_completed
       created_at
       updated_at
     }
@@ -560,10 +593,7 @@ export type InsertTodosMutationOptions = Apollo.BaseMutationOptions<InsertTodosM
 export const DeleteTodoDocument = gql`
     mutation DeleteTodo($id: Int) {
   delete_todos(where: {id: {_eq: $id}}) {
-    returning {
-      id
-      text
-    }
+    affected_rows
   }
 }
     `;
@@ -593,3 +623,37 @@ export function useDeleteTodoMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeleteTodoMutationHookResult = ReturnType<typeof useDeleteTodoMutation>;
 export type DeleteTodoMutationResult = Apollo.MutationResult<DeleteTodoMutation>;
 export type DeleteTodoMutationOptions = Apollo.BaseMutationOptions<DeleteTodoMutation, DeleteTodoMutationVariables>;
+export const UpdateTodoStatusDocument = gql`
+    mutation UpdateTodoStatus($_eq: Int!, $is_completed: Boolean!) {
+  update_todos(where: {id: {_eq: $_eq}}, _set: {is_completed: $is_completed}) {
+    affected_rows
+  }
+}
+    `;
+export type UpdateTodoStatusMutationFn = Apollo.MutationFunction<UpdateTodoStatusMutation, UpdateTodoStatusMutationVariables>;
+
+/**
+ * __useUpdateTodoStatusMutation__
+ *
+ * To run a mutation, you first call `useUpdateTodoStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTodoStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTodoStatusMutation, { data, loading, error }] = useUpdateTodoStatusMutation({
+ *   variables: {
+ *      _eq: // value for '_eq'
+ *      is_completed: // value for 'is_completed'
+ *   },
+ * });
+ */
+export function useUpdateTodoStatusMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTodoStatusMutation, UpdateTodoStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateTodoStatusMutation, UpdateTodoStatusMutationVariables>(UpdateTodoStatusDocument, options);
+      }
+export type UpdateTodoStatusMutationHookResult = ReturnType<typeof useUpdateTodoStatusMutation>;
+export type UpdateTodoStatusMutationResult = Apollo.MutationResult<UpdateTodoStatusMutation>;
+export type UpdateTodoStatusMutationOptions = Apollo.BaseMutationOptions<UpdateTodoStatusMutation, UpdateTodoStatusMutationVariables>;

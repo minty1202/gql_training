@@ -1,7 +1,8 @@
 query GetTodos {
-  todos {
+  todos(order_by: {id: desc}) {
     id
     text
+    is_completed
     created_at
     updated_at
   }
@@ -13,6 +14,7 @@ mutation InsertTodos($text: String) {
     returning {
       id
       text
+      is_completed
       created_at
       updated_at
     }
@@ -21,9 +23,12 @@ mutation InsertTodos($text: String) {
 
 mutation DeleteTodo ($id: Int) {
   delete_todos(where: {id: {_eq: $id}}) {
-    returning {
-      id
-      text
-    }
+    affected_rows
+  }
+}
+
+mutation UpdateTodoStatus($_eq: Int!, $is_completed: Boolean!) {
+  update_todos(where: {id: {_eq: $_eq}}, _set: {is_completed: $is_completed}) {
+    affected_rows
   }
 }

@@ -25,7 +25,7 @@ export function SubmitTodo({ text, onSubmit }: SubmitTodoProps) {
 
       cache.writeQuery({
         query: GetTodosDocument,
-        data: { todos: [...todos, newTodo] },
+        data: { todos: [newTodo, ...todos] },
       });
     }
   });

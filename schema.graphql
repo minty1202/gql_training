@@ -14,6 +14,21 @@ directive @cached(
 ) on QUERY
 
 """
+Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
+"""
+input Boolean_comparison_exp {
+  _eq: Boolean
+  _gt: Boolean
+  _gte: Boolean
+  _in: [Boolean!]
+  _is_null: Boolean
+  _lt: Boolean
+  _lte: Boolean
+  _neq: Boolean
+  _nin: [Boolean!]
+}
+
+"""
 Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'.
 """
 input Int_comparison_exp {
@@ -308,6 +323,7 @@ input timestamptz_comparison_exp {
 type todos {
   created_at: timestamptz!
   id: Int!
+  is_completed: Boolean
   text: String!
   updated_at: timestamptz!
 }
@@ -351,6 +367,7 @@ input todos_bool_exp {
   _or: [todos_bool_exp!]
   created_at: timestamptz_comparison_exp
   id: Int_comparison_exp
+  is_completed: Boolean_comparison_exp
   text: String_comparison_exp
   updated_at: timestamptz_comparison_exp
 }
@@ -378,6 +395,7 @@ input type for inserting data into table "todos"
 input todos_insert_input {
   created_at: timestamptz
   id: Int
+  is_completed: Boolean
   text: String
   updated_at: timestamptz
 }
@@ -422,6 +440,7 @@ input todos_on_conflict {
 input todos_order_by {
   created_at: order_by
   id: order_by
+  is_completed: order_by
   text: order_by
   updated_at: order_by
 }
@@ -442,6 +461,9 @@ enum todos_select_column {
   id
 
   """column name"""
+  is_completed
+
+  """column name"""
   text
 
   """column name"""
@@ -454,6 +476,7 @@ input type for updating data in table "todos"
 input todos_set_input {
   created_at: timestamptz
   id: Int
+  is_completed: Boolean
   text: String
   updated_at: timestamptz
 }
@@ -488,6 +511,7 @@ input todos_stream_cursor_input {
 input todos_stream_cursor_value_input {
   created_at: timestamptz
   id: Int
+  is_completed: Boolean
   text: String
   updated_at: timestamptz
 }
@@ -506,6 +530,9 @@ enum todos_update_column {
 
   """column name"""
   id
+
+  """column name"""
+  is_completed
 
   """column name"""
   text
