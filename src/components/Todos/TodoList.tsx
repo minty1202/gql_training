@@ -1,15 +1,16 @@
-import { Todos as TypeTodo } from '@/gen/graphql';
+import { TodoFragment as Todo } from '@/gen/graphql';
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import { UpdateStatus } from '@/components/Todos/UpdateStatus';
 import { Delete } from '@/components/Todos/Delete';
 
 interface TodosProps {
-  todos: TypeTodo[] | undefined;
+  todos: Todo[] | undefined;
 }
 
 export function TodoList ({ todos }: TodosProps) {
 
   if (!todos) return null;
+
   return (
     <>
       <TableContainer component={Paper}>

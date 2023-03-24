@@ -1,34 +1,17 @@
-query GetTodos {
-  todos(order_by: {id: desc}) {
+mutation InsertTodo($text: String!, $user_id: Int!) {
+  insert_todos_one(object: {text: $text, user_id: $user_id}) {
+    ...Todo
+  }
+}
+
+mutation DeleteTodo($id: Int!) {
+  delete_todos_by_pk(id: $id) {
     id
-    text
-    is_completed
-    created_at
-    updated_at
   }
 }
 
-mutation InsertTodos($text: String) {
-  insert_todos(objects: {text: $text}) {
-    affected_rows
-    returning {
-      id
-      text
-      is_completed
-      created_at
-      updated_at
-    }
-  }
-}
-
-mutation DeleteTodo ($id: Int) {
-  delete_todos(where: {id: {_eq: $id}}) {
-    affected_rows
-  }
-}
-
-mutation UpdateTodoStatus($_eq: Int!, $is_completed: Boolean!) {
-  update_todos(where: {id: {_eq: $_eq}}, _set: {is_completed: $is_completed}) {
-    affected_rows
+mutation UpdateTodoStatus($id: Int!, $is_completed: Boolean!) {
+  update_todos_by_pk(pk_columns: {id: $id}, _set: {is_completed: $is_completed}) {
+    id
   }
 }

@@ -1,0 +1,19 @@
+query GetUsers {
+  users(order_by: {id: desc}) {
+    id
+    name
+    created_at
+    updated_at
+  }
+}
+query GetUser($id: Int!) {
+  users_by_pk(id: $id) {
+    id
+    name
+    created_at
+    updated_at
+    todos(order_by: {id: desc}) {
+      ...Todo
+    }
+  }
+}

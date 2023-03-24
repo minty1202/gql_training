@@ -1,6 +1,7 @@
 import { Button } from '@mui/material';
-import { useInsertTodosMutation, GetTodosDocument } from '@/gen/graphql';
-import { Todos as TypeTodo } from '@/gen/graphql';
+import { useParams } from 'react-router-dom';
+import { useInsertTodoMutation, GetUserDocument } from '@/gen/graphql';
+import { Users } from '@/gen/graphql';
 
 
 interface SubmitTodoProps {
@@ -9,23 +10,41 @@ interface SubmitTodoProps {
 }
 
 export function SubmitTodo({ text, onSubmit }: SubmitTodoProps) {
-  const [insertTodo, { data, error }] = useInsertTodosMutation({
+  const { user_id } = useParams<{ user_id: string }>();
+  const [insertTodo, { data, error }] = useInsertTodoMutation({
     variables: {
       text: text,
+      user_id: parseInt(user_id || ''),
     },
     // キャッシュの更新
     update: (cache, { data }) => {
       if (!data) return;
-      if (!data.insert_todos) return;
-      const newTodo = data.insert_todos?.returning[0];
+      if (!data.insert_todos_one) return;
 
-      const existing = cache.readQuery({ query: GetTodosDocument }) as { todos: TypeTodo[] } | null;
+      const newTodo = data.insert_todos_one
+      const existing = cache.readQuery({ 
+        query: GetUserDocument,
+        variables: {
+          id: parseInt(user_id || ''),
+        },
+      }) as { users_by_pk: Users } | null;
+
       if (!existing) return;
-      const { todos } = existing;
+  
+      const { users_by_pk: { todos } } = existing;
+      if (!todos) return;
 
       cache.writeQuery({
-        query: GetTodosDocument,
-        data: { todos: [newTodo, ...todos] },
+        query: GetUserDocument,
+        variables: {
+          id: parseInt(user_id || ''),
+        },
+        data: { 
+          users_by_pk: {
+            ...existing.users_by_pk,
+            todos: [newTodo, ...todos],
+          }
+        },
       });
     }
   });
@@ -35,7 +54,7 @@ export function SubmitTodo({ text, onSubmit }: SubmitTodoProps) {
     insertTodo();
     if (error) throw new Error(error.message);
     if (!data) return;
-    if (!data.insert_todos) return;
+    if (!data.insert_todos_one) return;
 
     onSubmit();
   };
