@@ -3,11 +3,11 @@ import { useGetTodosQuery } from '@/gen/graphql';
 
 import { TextField, Box } from '@mui/material';
 
-import { SubmitTodo } from '@/components/Todo/Submit';
+import { SubmitTodo } from '@/components/Todos/Submit';
 
-import { Todos } from '@/components/Todo/Todos';
+import { TodoList } from '@/components/Todos/TodoList';
 
-export function Todo () {
+export function Todos () {
   const [text, setText] = useState('');
   const { data } = useGetTodosQuery();
 
@@ -18,15 +18,15 @@ export function Todo () {
   return (
     <>
     <Box display='flex' alignItems='center' m={2}>
-    <TextField
-      label="Todo"
-      value={text}
-      onChange={(e) => setText(e.target.value)}
-      sx={{ mr: 2 }}
-    />
-    <SubmitTodo text={text} onSubmit={handleSubmit} />
+      <TextField
+        label="Todo"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        sx={{ mr: 2 }}
+      />
+      <SubmitTodo text={text} onSubmit={handleSubmit} />
     </Box>
-      <Todos todos={data?.todos} />
+      <TodoList todos={data?.todos} />
     </>
   );
 }

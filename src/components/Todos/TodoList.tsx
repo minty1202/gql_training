@@ -7,7 +7,7 @@ interface TodosProps {
   todos: TypeTodo[] | undefined;
 }
 
-export function Todos ({ todos }: TodosProps) {
+export function TodoList ({ todos }: TodosProps) {
 
   if (!todos) return null;
   return (

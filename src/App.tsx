@@ -1,8 +1,8 @@
-import { Todo } from '@/components/Todos';
+import { Todos } from '@/components/Todos';
 
 export function App() {
 
   return (
-    <Todo />
+    <Todos />
   );
 }
